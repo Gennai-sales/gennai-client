@@ -1,59 +1,17 @@
-import { useState, useEffect } from 'react';
+import { useLoginForm } from '../hooks/useLoginForm';
+import Button from '../components/common/Button';
+import Input from '../components/common/Input';
 
 const Login = () => {
-  const [formData, setFormData] = useState({
-    email: '',
-    password: ''
-  });
-  const [isValid, setIsValid] = useState(false);
-  const [touched, setTouched] = useState({
-    email: false,
-    password: false
-  });
-
-  const validateForm = (data) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const isEmailValid = emailRegex.test(data.email);
-    const isPasswordValid = data.password.length >= 6;
-    setIsValid(isEmailValid && isPasswordValid);
-  };
-
-  const handleChange = (e) => {
-    const newFormData = {
-      ...formData,
-      [e.target.name]: e.target.value
-    };
-    setFormData(newFormData);
-    validateForm(newFormData);
-  };
-
-  const handleBlur = (field) => {
-    setTouched(prev => ({
-      ...prev,
-      [field]: true
-    }));
-  };
-
-  const getFieldStatus = (field) => {
-    if (!touched[field]) return '';
-    
-    if (field === 'email') {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      return emailRegex.test(formData.email) ? 'valid' : 'invalid';
-    }
-    
-    if (field === 'password') {
-      return formData.password.length >= 6 ? 'valid' : 'invalid';
-    }
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (isValid) {
-      // Aquí iría la lógica de autenticación
-      console.log('Formulario válido:', formData);
-    }
-  };
+  const {
+    formData,
+    isValid,
+    touched,
+    handleChange,
+    handleBlur,
+    getFieldStatus,
+    handleSubmit
+  } = useLoginForm();
 
   return (
     <div className="min-h-screen w-screen flex items-center justify-center bg-gradient-to-br from-green-900 via-green-800 to-black relative overflow-hidden">
@@ -75,60 +33,41 @@ const Login = () => {
             <p className="text-green-300 text-sm mb-6">Welcome to the future of payments</p>
 
             <div className="space-y-8">
-              <div>
-                <label className="block text-sm text-green-300 mb-1">Email</label>
-                <div className="relative">
-                  <input
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    onBlur={() => handleBlur('email')}
-                    className={`w-full px-3 py-2 rounded-xl backdrop-blur-sm border 
-                      ${touched.email && getFieldStatus('email') === 'invalid' ? 'border-red-500/50' : 'border-green-500/20'}
-                      focus:outline-none focus:border-green-500/50 text-white placeholder-green-300/50 bg-black/20`}
-                    placeholder="hi@example.com"
-                  />
-                  {touched.email && getFieldStatus('email') === 'invalid' && (
-                    <div className="absolute -bottom-5 left-0 text-xs text-red-400">
-                      Formato de email inválido
-                    </div>
-                  )}
-                </div>
-              </div>
+              <Input
+                label="Email"
+                name="email"
+                type="email"
+                value={formData.email}
+                onChange={handleChange}
+                onBlur={() => handleBlur('email')}
+                placeholder="hi@example.com"
+                error={getFieldStatus('email') === 'invalid' ? 'Formato de email inválido' : ''}
+                touched={touched.email}
+              />
 
-              <div>
-                <div className="flex justify-between mb-1">
-                  <label className="text-sm text-green-300">Password</label>
-                  <a href="#" className="text-xs text-green-400 hover:text-green-300">Forgot?</a>
-                </div>
-                <div className="relative">
-                  <input
-                    type="password"
-                    name="password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    onBlur={() => handleBlur('password')}
-                    className={`w-full px-3 py-2 rounded-xl backdrop-blur-sm border 
-                      ${touched.password && getFieldStatus('password') === 'invalid' ? 'border-red-500/50' : 'border-green-500/20'}
-                      focus:outline-none focus:border-green-500/50 text-white placeholder-green-300/50 bg-black/20`}
-                    placeholder="••••••••"
-                  />
-                  {touched.password && getFieldStatus('password') === 'invalid' && (
-                    <div className="absolute -bottom-5 left-0 text-xs text-red-400">
-                      Mínimo 6 caracteres
-                    </div>
-                  )}
-                </div>
-              </div>
+              <Input
+                label="Password"
+                name="password"
+                type="password"
+                value={formData.password}
+                onChange={handleChange}
+                onBlur={() => handleBlur('password')}
+                placeholder="••••••••"
+                error={getFieldStatus('password') === 'invalid' ? 'Mínimo 6 caracteres' : ''}
+                touched={touched.password}
+                rightElement={
+                  <a href="#" className="text-xs text-green-400 hover:text-green-300">
+                    Forgot?
+                  </a>
+                }
+              />
 
-              <div 
-                onClick={() => isValid && handleSubmit()}
-                className={`w-full ${isValid ? 'bg-green-600 hover:bg-green-700' : 'bg-zinc-800 cursor-not-allowed'} 
-                text-white py-2.5 px-4 rounded-xl text-center text-sm font-medium transition-colors duration-200 ease-in-out`}
+              <Button
+                onClick={handleSubmit}
+                disabled={!isValid}
               >
                 {isValid ? 'Iniciar Sesión' : 'Complete los campos'}
-              </div>
+              </Button>
             </div>
           </div>
         </div>

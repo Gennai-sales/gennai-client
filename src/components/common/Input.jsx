@@ -1,32 +1,40 @@
-import React from 'react';
-
-const Input = ({
-  type = 'text',
-  name,
-  value,
-  onChange,
+const Input = ({ 
+  label, 
+  name, 
+  type = 'text', 
+  value, 
+  onChange, 
+  onBlur,
   placeholder,
-  required = false,
-  className = '',
-  error
+  error,
+  touched,
+  rightElement
 }) => {
-  const baseClasses = 'w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors duration-200';
-  const errorClasses = error ? 'border-red-500' : 'border-gray-300';
-  
   return (
-    <div className="space-y-1">
-      <input
-        type={type}
-        name={name}
-        value={value}
-        onChange={onChange}
-        placeholder={placeholder}
-        required={required}
-        className={`${baseClasses} ${errorClasses} ${className}`}
-      />
-      {error && (
-        <p className="text-red-500 text-sm">{error}</p>
-      )}
+    <div>
+      <div className="flex justify-between mb-1">
+        <label className="text-sm text-green-300">{label}</label>
+        {rightElement}
+      </div>
+      <div className="relative">
+        <input
+          type={type}
+          name={name}
+          value={value}
+          onChange={onChange}
+          onBlur={onBlur}
+          className={`w-full px-3 py-2 rounded-xl backdrop-blur-sm border 
+            ${touched && error ? 'border-red-500/50' : 'border-green-500/20'}
+            focus:outline-none focus:border-green-500/50 text-white 
+            placeholder-green-300/50 bg-black/20`}
+          placeholder={placeholder}
+        />
+        {touched && error && (
+          <div className="absolute -bottom-5 left-0 text-xs text-white/70">
+            {error}
+          </div>
+        )}
+      </div>
     </div>
   );
 };

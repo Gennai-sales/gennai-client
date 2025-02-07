@@ -1,23 +1,18 @@
-import React from 'react';
-
-const Button = ({ 
-  children, 
-  type = 'button', 
-  className = '', 
-  onClick,
-  disabled = false 
-}) => {
-  const baseClasses = 'px-4 py-2 rounded-md font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50';
+const Button = ({ onClick, disabled, children, className = '' }) => {
+  const baseStyles = `w-full py-2.5 px-4 rounded-xl text-center text-sm font-medium 
+    transition-colors duration-200 ease-in-out`;
   
+  const validStyles = disabled
+    ? 'bg-zinc-800 cursor-not-allowed'
+    : 'bg-green-600 hover:bg-green-700 cursor-pointer';
+
   return (
-    <button
-      type={type}
-      className={`${baseClasses} ${className}`}
-      onClick={onClick}
-      disabled={disabled}
+    <div 
+      onClick={!disabled ? onClick : undefined}
+      className={`${baseStyles} ${validStyles} ${className}`}
     >
       {children}
-    </button>
+    </div>
   );
 };
 
