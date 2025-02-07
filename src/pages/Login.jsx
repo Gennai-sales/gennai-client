@@ -27,10 +27,13 @@ const Login = () => {
         {/* Login compacto y centrado */}
         <div className="md:col-span-2 w-full flex items-center">
           <div className="w-full p-6 bg-green-900/20 backdrop-blur-lg rounded-3xl border border-green-500/20">
-            <div className="w-10 h-10 bg-green-500/20 backdrop-blur-sm rounded-xl border border-green-500/20 mb-4"></div>
+            <div className="flex justify-center mb-4">
+              <div className="w-10 h-10 bg-green-500/20 backdrop-blur-sm rounded-xl border border-green-500/20"></div>
+            </div>
             
-            <h2 className="text-xl font-light text-white">Get Started</h2>
-            <p className="text-green-300 text-sm mb-6">Welcome to the future of payments</p>
+            <h2 className="text-xl font-light text-white">Empecemos</h2>
+            <p className="text-green-300 text-sm mb-6">Bienvenido al futuro de las ventas</p>
+
 
             <div className="space-y-8">
               <Input
