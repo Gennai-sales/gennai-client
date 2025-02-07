@@ -6,6 +6,10 @@ const Login = () => {
     password: ''
   });
   const [isValid, setIsValid] = useState(false);
+  const [touched, setTouched] = useState({
+    email: false,
+    password: false
+  });
 
   const validateForm = (data) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -21,6 +25,26 @@ const Login = () => {
     };
     setFormData(newFormData);
     validateForm(newFormData);
+  };
+
+  const handleBlur = (field) => {
+    setTouched(prev => ({
+      ...prev,
+      [field]: true
+    }));
+  };
+
+  const getFieldStatus = (field) => {
+    if (!touched[field]) return '';
+    
+    if (field === 'email') {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailRegex.test(formData.email) ? 'valid' : 'invalid';
+    }
+    
+    if (field === 'password') {
+      return formData.password.length >= 6 ? 'valid' : 'invalid';
+    }
   };
 
   const handleSubmit = (e) => {
@@ -42,53 +66,71 @@ const Login = () => {
 
       {/* Contenedor principal más compacto */}
       <div className="w-full max-w-6xl mx-4 grid md:grid-cols-5 gap-6 relative z-10">
-        {/* Lado izquierdo - Login */}
-        <div className="md:col-span-2 w-full p-6 bg-green-900/20 backdrop-blur-lg rounded-3xl border border-green-500/20">
-          <div className="mb-6">
-            <div className="w-10 h-10 bg-green-500/20 backdrop-blur-sm rounded-xl border border-green-500/20"></div>
-          </div>
+        {/* Login compacto y centrado */}
+        <div className="md:col-span-2 w-full flex items-center">
+          <div className="w-full p-6 bg-green-900/20 backdrop-blur-lg rounded-3xl border border-green-500/20">
+            <div className="w-10 h-10 bg-green-500/20 backdrop-blur-sm rounded-xl border border-green-500/20 mb-4"></div>
+            
+            <h2 className="text-xl font-light text-white">Get Started</h2>
+            <p className="text-green-300 text-sm mb-6">Welcome to the future of payments</p>
 
-          <h2 className="text-2xl font-light text-white mb-1">Get Started</h2>
-          <p className="text-green-300 mb-6 text-sm">Welcome to the future of payments</p>
-
-          <form className="space-y-4">
-            <div>
-              <label className="block text-sm text-green-300 mb-1">Email</label>
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                className="w-full px-3 py-2 rounded-xl backdrop-blur-sm border border-green-500/20
-                focus:outline-none focus:border-green-500/50 text-white placeholder-green-300/50 bg-black/20"
-                placeholder="hi@example.com"
-              />
-            </div>
-
-            <div>
-              <div className="flex justify-between mb-1">
-                <label className="block text-sm text-green-300">Password</label>
-                <a href="#" className="text-xs text-green-400 hover:text-green-300">Forgot?</a>
+            <div className="space-y-8">
+              <div>
+                <label className="block text-sm text-green-300 mb-1">Email</label>
+                <div className="relative">
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    onBlur={() => handleBlur('email')}
+                    className={`w-full px-3 py-2 rounded-xl backdrop-blur-sm border 
+                      ${touched.email && getFieldStatus('email') === 'invalid' ? 'border-red-500/50' : 'border-green-500/20'}
+                      focus:outline-none focus:border-green-500/50 text-white placeholder-green-300/50 bg-black/20`}
+                    placeholder="hi@example.com"
+                  />
+                  {touched.email && getFieldStatus('email') === 'invalid' && (
+                    <div className="absolute -bottom-5 left-0 text-xs text-red-400">
+                      Formato de email inválido
+                    </div>
+                  )}
+                </div>
               </div>
-              <input
-                type="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                className="w-full px-3 py-2 rounded-xl backdrop-blur-sm border border-green-500/20
-                focus:outline-none focus:border-green-500/50 text-white placeholder-green-300/50 bg-black/20"
-                placeholder="••••••••"
-              />
-            </div>
 
-            <div 
-              onClick={handleSubmit}
-              className={`w-full ${isValid ? 'bg-green-600 hover:bg-green-700' : 'bg-zinc-800 cursor-not-allowed'} 
-              text-white py-3 px-4 rounded-xl text-center font-medium transition-colors duration-200 ease-in-out`}
-            >
-              {isValid ? 'Iniciar Sesión' : 'Complete los campos'}
+              <div>
+                <div className="flex justify-between mb-1">
+                  <label className="text-sm text-green-300">Password</label>
+                  <a href="#" className="text-xs text-green-400 hover:text-green-300">Forgot?</a>
+                </div>
+                <div className="relative">
+                  <input
+                    type="password"
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    onBlur={() => handleBlur('password')}
+                    className={`w-full px-3 py-2 rounded-xl backdrop-blur-sm border 
+                      ${touched.password && getFieldStatus('password') === 'invalid' ? 'border-red-500/50' : 'border-green-500/20'}
+                      focus:outline-none focus:border-green-500/50 text-white placeholder-green-300/50 bg-black/20`}
+                    placeholder="••••••••"
+                  />
+                  {touched.password && getFieldStatus('password') === 'invalid' && (
+                    <div className="absolute -bottom-5 left-0 text-xs text-red-400">
+                      Mínimo 6 caracteres
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div 
+                onClick={() => isValid && handleSubmit()}
+                className={`w-full ${isValid ? 'bg-green-600 hover:bg-green-700' : 'bg-zinc-800 cursor-not-allowed'} 
+                text-white py-2.5 px-4 rounded-xl text-center text-sm font-medium transition-colors duration-200 ease-in-out`}
+              >
+                {isValid ? 'Iniciar Sesión' : 'Complete los campos'}
+              </div>
             </div>
-          </form>
+          </div>
         </div>
 
         {/* Lado derecho - Panel informativo */}
